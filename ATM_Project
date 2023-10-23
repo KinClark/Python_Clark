@@ -1,0 +1,108 @@
+# ATM program with user signup, login, transaction history, and saving data to a text file
+
+# Dictionary to store user information (username, password, balance, transaction history)
+users = {}
+
+# Function to save user data to a text file
+def save_to_file():
+    with open("user_data.txt", "w") as file:
+        for username, user_info in users.items():
+            file.write(f"Username: {username}\n")
+            file.write(f"Password: {user_info['password']}\n")
+            file.write(f"Balance: {user_info['balance']}\n")
+            file.write(f"Transaction History: {', '.join(user_info['transaction_history'])}\n")
+            file.write("--------------------\n")
+
+while True:
+    print("[1] Sign Up")
+    print("[2] Log In")
+    print("[3] View Previous Inputs")
+    print("[x] Exit")
+
+    choice = input("\nEnter your choice: ")
+
+    if choice == "1":
+        # Sign Up
+        username = input("\nEnter your username: ")
+        password = input("Enter your password: ")
+
+        # Check if the username already exists
+        if username in users:
+            print("Username already exists. Please choose a different username.")
+        else:
+            users[username] = {"password": password, "balance": 0, "transaction_history": []}
+            print("Account created successfully!")
+
+    elif choice == "2":
+        # Log In
+        username = input("\nEnter your username: ")
+        password = input("Enter your password: ")
+
+        # Check if the username and password are correct
+        if username in users and users[username]["password"] == password:
+            print("Login successful. Welcome, " + username + "!")
+            while True:
+                print("\n[1] Check Balance")
+                print("\n[2] Withdraw Money")
+                print("\n[3] Deposit Money")
+                print("\n[4] View Transaction History")
+                print("\n[5] Log Out")
+
+                user_choice = input("\nEnter your choice: ")
+
+                if user_choice == "1":
+                    print("\nYour balance is $" + str(users[username]["balance"]))
+                elif user_choice == "2":
+                    amount = float(input("\nEnter the amount to withdraw: "))
+                    if amount <= users[username]["balance"]:
+                        users[username]["balance"] -= amount
+                        users[username]["transaction_history"].append(f"Withdrew: ${amount}")
+                        print("Withdrawal successful. Your new balance is $" + str(users[username]["balance"]))
+                    else:
+                        print("Insufficient balance!")
+                elif user_choice == "3":
+                    amount = float(input("\nEnter the amount to deposit: "))
+                    users[username]["balance"] += amount
+                    users[username]["transaction_history"].append(f"Deposited: ${amount}")
+                    print("Deposit successful. Your new balance is $" + str(users[username]["balance"]))
+                elif user_choice == "4":
+                    print("\nTransaction History:")
+                    for transaction in users[username]["transaction_history"]:
+                        print(transaction)
+                elif user_choice == "5":
+                    print("Logging out. Goodbye, " + username + "!")
+                    save_to_file()  # Save data to file before logging out
+                    break
+                else:
+                    print("\nInvalid choice. Please try again.")
+
+        else:
+            print("\nInvalid username or password. Please try again.")
+
+    elif choice == "3":
+        # View Previous Inputs (Restricted Access)
+        admin_username_input = input("\nEnter admin username: ")
+        admin_password_input = input("Enter admin password: ")
+
+        admin_username = "admin"
+        admin_password = "adminpass"
+
+        if admin_username_input == admin_username and admin_password_input == admin_password:
+            print("\nRECORDS:")
+            for username, user_info in users.items():
+                print("\nUsername:", username)
+                print("Password:", user_info["password"])
+                print("Balance:", user_info["balance"])
+                print("Transaction History:", user_info["transaction_history"])
+                print("--------------------")
+        else:
+            print("\nInvalid admin username or password. Access denied.")
+
+    elif choice == "x":
+        # Exit
+        print("\nThank you for using the ATM. Goodbye!")
+        save_to_file()  # Save data to file before exiting
+        break
+
+    else:
+        print("\nInvalid choice. Please try again.")
