@@ -1,0 +1,104 @@
+
+users = {} # Dictionary diri ma store ang user information 
+
+def save_to_file():# Function to save user data to a text file
+    with open("user_data.txt", "w") as file:
+        for username, user_info in users.items():
+            file.write(f"Username: {username}\n")
+            file.write(f"Password: {user_info['password']}\n")
+            file.write("--------------------\n")
+
+print('WELCOME TO PAYROLL MANAGEMENT SYSTEM')
+while True:
+    print("[1] Sign Up")
+    print("[2] Log In")
+    print("[3] Admin")
+    print("[x] Exit")
+
+    choice = input("\nEnter your choice: ")
+
+    if choice == "1":
+        print('\nSIGN UP')
+        username = input("Enter your username: ")# Sign Up
+        password = input("Enter your password: ")
+
+       
+        if username in users:# Check if the username already exists
+            print("\nUsername already exists. Please choose a different username.")
+        else:
+            users[username] = {"password": password }
+            print("Account created successfully!")
+
+    elif choice == "2":
+        print('LOGIN')
+        username = input("Enter your username: ")# Log In
+        password = input("Enter your password: ")
+
+        
+        if username in users and users[username]["password"] == password:# Check if the username and password are correct
+            print("Login successful. Welcome, " + username + "!")
+            while True:
+                print("\n[1] RATE ")
+                print("[2] DEDUCTIONS")
+                print("[3] ADD EMPLOYEE")
+                print("[4] VIEW RECORDS")
+                print("[5] Log Out")
+
+                user_choice = input("\nEnter your choice: ")
+
+                if user_choice == "1":
+                    print("\n[1] PART TIME")
+                    print("[2] FULL TIME")
+                    user_choice = input("\nEnter your choice: ")
+                    if user_choice == '1':
+                        print('PART TIME')
+                    elif user_choice == '2':
+                        print('FULL TIME')
+                elif user_choice == "2":
+                    print('DEDUCTIONS:')
+                    SSS = int(input('Enter SSS: '))
+                    PAG_IBIG = int(input('Enter PAG IBIG: '))
+                    PHILHEALTH = int(input('Enter PHILHEALTH: ')) 
+                    TAX = int(input('Enter TAX: '))
+                
+                elif user_choice == "3":
+                    print('[1] FULL TIME')
+                    print('[2] PART TIME')
+                elif user_choice == "4":
+                    print("\nVIEW RECORDS:")
+
+                elif user_choice == "5":
+                    print("\nLogging out. Goodbye, " + username + "!")
+                    break
+                else:
+                    print("\nInvalid choice. Please try again.")
+
+        else:
+            print("\nInvalid username or password. Please try again.")
+
+    elif choice == "3":
+        
+        admin_username_input = input("\nEnter admin username: ")# View RECORDS (Restricted Access)
+        admin_password_input = input("Enter admin password: ")
+
+        admin_username = "admin"#Default
+        admin_password = "pass"
+
+        if admin_username_input == admin_username and admin_password_input == admin_password:
+            print("\nRECORDS:")
+            for username, user_info in users.items():
+                print("--------------------")
+                print("Username:", username)
+                print("Password:", user_info["password"])
+                print("--------------------")
+        else:
+            print("\nInvalid admin username or password. Access denied.")
+
+    elif choice == "x":
+        
+        print("\nThank you for using the Payroll. Goodbye!")# Exit
+        save_to_file()  
+        break
+
+    else:
+        print("\nInvalid choice. Please try again.")
